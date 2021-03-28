@@ -2,5 +2,6 @@ package exception
 
 // runtimeException error code
 const (
-	AttributeNotExistException = "attribute is not exist"
+	AttributeNotExistError = "attribute is not exist"
+	NodeNotFoundError      = "the node is not found"
 )
