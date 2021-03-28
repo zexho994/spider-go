@@ -12,7 +12,7 @@ func TestNode(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *node
+		want    *Node
 		wantErr bool
 	}{
 		// TODO: Add test cases.
@@ -22,9 +22,9 @@ func TestNode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := Node(tt.args.name, tt.args.attributes)
+			_, err := NewNode(tt.args.name, tt.args.attributes)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Node() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewNode() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
@@ -49,12 +49,12 @@ func Test_node_updateAttribute(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		{name: "success", fields: fields{name: "node", attributes: &Attribute{map[string]string{"k1": "v1"}}}, args: args{k: "k1", v: "v1"}, want: true, wantErr: false},
-		{name: "attrKNil", fields: fields{name: "node", attributes: &Attribute{map[string]string{}}}, args: args{k: "k1", v: "v1"}, want: false, wantErr: true},
+		{name: "success", fields: fields{name: "Node", attributes: &Attribute{map[string]string{"k1": "v1"}}}, args: args{k: "k1", v: "v1"}, want: true, wantErr: false},
+		{name: "attrKNil", fields: fields{name: "Node", attributes: &Attribute{map[string]string{}}}, args: args{k: "k1", v: "v1"}, want: false, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			this := &node{
+			this := &Node{
 				name:         tt.fields.name,
 				attributes:   tt.fields.attributes,
 				associated:   tt.fields.associated,
