@@ -4,12 +4,12 @@ import "github.com/zouzhihao-994/spider-go/exception"
 
 type Node struct {
 	name         string
-	attributes   *Attribute
+	attributes   *Attributes
 	associated   map[string]*Relation
 	beAssociated map[string]*Relation
 }
 
-func NewNode(name string, attributes *Attribute) (*Node, error) {
+func NewNode(name string, attributes *Attributes) (*Node, error) {
 	if name == "" {
 		return nil, exception.RuntimeException("name is blank")
 	}
@@ -24,6 +24,10 @@ func NewNode(name string, attributes *Attribute) (*Node, error) {
 	}, nil
 }
 
-func (this *Node) updateAttribute(k, v string) (bool, error) {
+func (this Node) Attribute() *Attributes {
+	return this.attributes
+}
+
+func (this *Node) UpdateAttribute(k, v string) (bool, error) {
 	return this.attributes.update(k, v)
 }

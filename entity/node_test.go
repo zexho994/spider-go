@@ -7,7 +7,7 @@ import (
 func TestNode(t *testing.T) {
 	type args struct {
 		name       string
-		attributes *Attribute
+		attributes *Attributes
 	}
 	tests := []struct {
 		name    string
@@ -16,8 +16,8 @@ func TestNode(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{name: "success", args: args{name: "name", attributes: &Attribute{body: map[string]string{}}}, want: nil, wantErr: false},
-		{name: "nameBlack", args: args{name: "", attributes: &Attribute{body: map[string]string{}}}, want: nil, wantErr: true},
+		{name: "success", args: args{name: "name", attributes: &Attributes{data: map[string]string{}}}, want: nil, wantErr: false},
+		{name: "nameBlack", args: args{name: "", attributes: &Attributes{data: map[string]string{}}}, want: nil, wantErr: true},
 		{name: "attributeNil", args: args{name: "name", attributes: nil}, want: nil, wantErr: true},
 	}
 	for _, tt := range tests {
@@ -34,7 +34,7 @@ func TestNode(t *testing.T) {
 func Test_node_updateAttribute(t *testing.T) {
 	type fields struct {
 		name         string
-		attributes   *Attribute
+		attributes   *Attributes
 		associated   map[string]*Relation
 		beAssociated map[string]*Relation
 	}
@@ -49,8 +49,8 @@ func Test_node_updateAttribute(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		{name: "success", fields: fields{name: "Node", attributes: &Attribute{map[string]string{"k1": "v1"}}}, args: args{k: "k1", v: "v1"}, want: true, wantErr: false},
-		{name: "attrKNil", fields: fields{name: "Node", attributes: &Attribute{map[string]string{}}}, args: args{k: "k1", v: "v1"}, want: false, wantErr: true},
+		{name: "success", fields: fields{name: "Node", attributes: NewAttribute("k1", map[string]string{"k1": "v1"})}, args: args{k: "k1", v: "v1"}, want: true, wantErr: false},
+		{name: "attrKNil", fields: fields{name: "Node", attributes: NewAttribute("k1", map[string]string{})}, args: args{k: "k1", v: "v1"}, want: false, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -60,7 +60,7 @@ func Test_node_updateAttribute(t *testing.T) {
 				associated:   tt.fields.associated,
 				beAssociated: tt.fields.beAssociated,
 			}
-			got, err := this.updateAttribute(tt.args.k, tt.args.v)
+			got, err := this.UpdateAttribute(tt.args.k, tt.args.v)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("updateAttribute() error = %v, wantErr %v", err, tt.wantErr)
 				return
