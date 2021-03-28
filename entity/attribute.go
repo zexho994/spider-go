@@ -4,20 +4,30 @@ import (
 	"github.com/zouzhihao-994/spider-go/exception"
 )
 
-type Attribute struct {
-	body map[string]string
+type Attributes struct {
+	index string
+	data  map[string]string
 }
 
-func NewAttribute(attr map[string]string) *Attribute {
-	return &Attribute{
-		body: attr,
+func NewAttribute(index string, attr map[string]string) *Attributes {
+	return &Attributes{
+		index: index,
+		data:  attr,
 	}
 }
 
-func (this *Attribute) update(k, v string) (bool, error) {
-	if this.body[k] == "" {
+func (this Attributes) Index() string {
+	return this.index
+}
+
+func (this *Attributes) get(k string) string {
+	return this.data[k]
+}
+
+func (this *Attributes) update(k, v string) (bool, error) {
+	if this.data[k] == "" {
 		return false, exception.RuntimeException(exception.AttributeNotExistError)
 	}
-	this.body[k] = v
+	this.data[k] = v
 	return true, nil
 }
