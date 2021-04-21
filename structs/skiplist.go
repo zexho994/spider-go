@@ -1,5 +1,7 @@
 package structs
 
+import "math/rand"
+
 type VALUE string
 
 type skipListMap map[string]*SkipList
@@ -45,4 +47,18 @@ func (SkipList) remove(key string, val VALUE) {
 // range find SkipListNode by score
 func (SkipList) rangeByScore(key string, s1, s2 float64) {
 
+}
+
+// Generates a random number of level
+func (sl *SkipList) randomLevel() uint8 {
+	var i uint8 = 1
+	for i <= sl.level {
+		if uint8(rand.Intn(2)) == 1 {
+			i++
+		} else {
+			return i
+		}
+	}
+	sl.level++
+	return sl.level
 }
