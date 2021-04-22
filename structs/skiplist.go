@@ -51,14 +51,13 @@ func (SkipList) rangeByScore(key string, s1, s2 float64) {
 
 // Generates a random number of level
 func (sl *SkipList) randomLevel() uint8 {
-	var i uint8 = 1
-	for i <= sl.level {
-		if uint8(rand.Intn(2)) == 1 {
-			i++
-		} else {
+	for i := uint8(1); i <= sl.level; i++ {
+		if uint8(rand.Intn(2)) == 0 {
 			return i
 		}
 	}
-	sl.level++
+	if sl.level < 64 {
+		sl.level++
+	}
 	return sl.level
 }
