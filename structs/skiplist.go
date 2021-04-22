@@ -4,8 +4,6 @@ import "math/rand"
 
 type VALUE string
 
-type skipListMap map[string]*SkipList
-
 type SkipList struct {
 	level        uint8
 	length       uint16
@@ -35,7 +33,7 @@ func initSkipList() *SkipList {
 }
 
 // add or update the key&val to SkipList
-func (SkipList) add(key string, val VALUE, score float64) {
+func (sl *SkipList) add(key string, val VALUE, score float64) {
 
 }
 
@@ -50,7 +48,7 @@ func (SkipList) rangeByScore(key string, s1, s2 float64) {
 }
 
 // find the SkipListNode by score, but it's not guaranteed to be the first one
-func (sl *SkipList) findByScore(val string, score float64) *SkipListNode {
+func (sl *SkipList) findByScore(score float64) *SkipListNode {
 	node := sl.header
 	for l := len(node.level); l >= 0; l-- {
 		if node.level[l].forward == nil || node.level[l].forward.score > score {
@@ -65,8 +63,37 @@ func (sl *SkipList) findByScore(val string, score float64) *SkipListNode {
 	return nil
 }
 
-func findK(sl *SkipListNode, score float64, size int64) {
+// find the first node that it.score equals the score
+func (sl *SkipList) firstForScore(score float64) *SkipListNode {
+	r := sl.findByScore(score)
+	if r == nil {
+		return nil
+	}
+	for r.backward != nil {
+		if r.backward.score != score {
+			return r
+		}
+		r = r.backward
+	}
+	return r
+}
 
+// find the last node that it.score equals the score
+func (sl *SkipList) lastForScore(score float64) *SkipListNode {
+	r := sl.findByScore(score)
+	if r == nil {
+		return nil
+	}
+
+	for idx := len(r.level) - 1; idx >= 0; idx-- {
+		if r.level[idx].forward.score > score {
+			continue
+		}
+		r = r.level[idx].forward
+		idx = len(r.level)
+	}
+
+	return r
 }
 
 // Generates a random number of level
