@@ -49,6 +49,26 @@ func (SkipList) rangeByScore(key string, s1, s2 float64) {
 
 }
 
+// find the SkipListNode by score, but it's not guaranteed to be the first one
+func (sl *SkipList) findByScore(val string, score float64) *SkipListNode {
+	node := sl.header
+	for l := len(node.level); l >= 0; l-- {
+		if node.level[l].forward == nil || node.level[l].forward.score > score {
+			continue
+		}
+		node = node.level[l].forward
+		if node.score == score {
+			return node
+		}
+		l = len(node.level)
+	}
+	return nil
+}
+
+func findK(sl *SkipListNode, score float64, size int64) {
+
+}
+
 // Generates a random number of level
 func (sl *SkipList) randomLevel() uint8 {
 	for i := uint8(1); i <= sl.level; i++ {
