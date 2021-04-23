@@ -1,6 +1,9 @@
 package structs
 
-import "math/rand"
+import (
+	"math/rand"
+	"strings"
+)
 
 type VALUE string
 
@@ -12,7 +15,7 @@ type SkipList struct {
 }
 
 type SkipListNode struct {
-	val      VALUE
+	val      string
 	score    float64
 	level    []*SkipListLevel
 	backward *SkipListNode
@@ -33,7 +36,54 @@ func initSkipList() *SkipList {
 }
 
 // add or update the key&val to SkipList
-func (sl *SkipList) add(key string, val VALUE, score float64) {
+func (sl *SkipList) add(key string, val string, score float64) {
+	sl.length++
+
+	toInsert := &SkipListNode{
+		level: make([]*SkipListLevel, sl.randomLevel()),
+		score: score,
+		val:   val,
+	}
+
+	pos := sl.findByScore(score)
+	if pos.score == score {
+		for pos.backward != nil && pos.backward.score == score && strings.Compare(val, pos.val) == -1 {
+			pos = pos.backward
+		}
+		toInsert.backward = pos.backward
+		toInsert.level[0].forward = pos
+		if pos.backward != nil {
+			pos.backward.level[0].forward = toInsert
+		}
+		pos.backward = toInsert
+	} else {
+		toInsert.level[0].forward = pos.level[0].forward
+		toInsert.backward = pos
+		if pos.level[0] != nil {
+			pos.level[0].forward.backward = toInsert
+		}
+		pos.level[0].forward = toInsert
+	}
+
+	for i := len(toInsert.level) - 1; i > 0; i-- {
+		if sl.header.level[i].forward == nil {
+			sl.header.level[i].forward = toInsert
+			continue
+		}
+		h := sl.header
+		for h.level[i].forward != nil &&
+			h.level[i].forward.score <= score &&
+			strings.Compare(val, h.level[i].forward.val) == -1 {
+			h = h.level[i].forward
+		}
+
+		if h.level[i].forward == nil {
+			h.level[i].forward = pos
+		} else {
+			pos.level[i].forward = h.level[i].forward
+			h.level[i].forward = pos
+		}
+	}
 
 }
 
@@ -60,7 +110,7 @@ func (sl *SkipList) findByScore(score float64) *SkipListNode {
 		}
 		l = len(node.level)
 	}
-	return nil
+	return node
 }
 
 // find the first node that it.score equals the score
